@@ -1,0 +1,62 @@
+#outer {
+    width: 900px;
+    height: 600px;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+#container {
+    width: 95%;
+    height: 300px;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 4px;
+    overflow-y: scroll;
+}
+#form {
+    height: 50px;
+    width: 100%;
+}
+#submit {
+    width: 100px;
+    height: 20px;
+    background-color: greenyellow;
+    border: 1px solid black;
+    border-radius: 3px;
+}
+#submit:hover {
+    border: 1px solid cornflowerblue;
+}
+#upload {
+    width: 390px;
+    background-color: lightgray;
+    border-radius: 3px;
+    border: 1px solid transparent;
+}
+#upload:hover {
+    border: 1px solid cornflowerblue;
+}
+
+table {
+  border-collapse: collapse;
+  vertical-align: top;
+}
+
+table.list {
+  width: 100%;
+}
+
+table.list tr td {
+  border: 1px solid black;
+}
+
+table.list tr th {
+    border: 1px solid transparent;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    text-shadow: 1px 1px 1px black;
+  background: lightgray;
+  color: cornflowerblue;
+  text-align: left;
+}
