@@ -1,7 +1,7 @@
 #outer {
     width: 900px;
     min-width: 900px;
-    height: 600px;
+    height: 630px;
     margin: auto;
     border: 1px solid black;
     border-radius: 5px;
@@ -11,7 +11,7 @@
 }
 #container {
     width: 95%;
-    height: 300px;
+    height: 270px;
     margin: auto;
     box-shadow: 0px 1px 1px black;
     border-radius: 4px;
@@ -82,4 +82,24 @@ table.list tr th {
   background-image: url(backgrounds/6.png);
   color: cornflowerblue;
   text-align: left;
+}
+.bigger {
+    background-color: red;
+}
+.smaller {
+    background-color: greenyellow;
+}
+.selected {
+    background-color: cornflowerblue;
+}
+#canvas {
+    width: 250px;
+    height: 250px;
+    background-color: white;
+    margin-top: 26px;
+    margin-left: 30px;
+}
+#img {
+    width: 100%;
+    height: 100%;
 }

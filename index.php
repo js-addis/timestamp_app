@@ -53,7 +53,7 @@ if(isset($_POST["submit"])) {
         echo "<div style='width:100%;background-color:crimson;display:flex;border:1px solid black'>" . "<p style='margin:auto'>Duplicate Entry Detected</p>" . "</div>";
     }
 
-    if (move_uploaded_file($tmp_name, "uploads/" . $file_name)) {
+    if (move_uploaded_file($tmp_name, "uploads/".$file_name)) {
         //
     } else {
         echo "Upload Failed!";
@@ -115,19 +115,33 @@ $uploads_array = find_all_uploads();
                 </table>
                 <?php db_disconnect($db); ?>
             </div>
+            <div id="canvas"><img id="img" src=""></div>
+
         </div>
         <script>
 
             $("tr").click(function() {
                 var timestamp = $(this).find(".timestamp").text();
+                var rows = $(this).parent().children();
                 var children = $(this).parent().children().find(".timestamp");
-                $(children).each(function() {
 
+
+                $(rows).removeClass("bigger, selected");
+                $(rows).removeClass("smaller");
+                $(this).addClass("selected");
+                $(children).each(function() {
                     if($(this).text() < timestamp) {
-                        $(this).parent().css({"background-color": "greenyellow"});
+                        $(this).parent().addClass("smaller");
+                    } else if($(this).text() > timestamp) {
+                        $(this).parent().addClass("bigger");
                     }
                 })
-
+            })
+            $("tr").click(function() {
+                var filename = $(this).find(".filename").text().substring(1);
+                var img = document.getElementById("img");
+                var string = ("uploads/")+filename;
+                img.src=string;
             })
         </script>
     </body>
