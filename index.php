@@ -102,13 +102,13 @@ $uploads_array = find_all_uploads();
 
                     <?php while($file = mysqli_fetch_assoc($uploads_array)) { ?>
                         <tr>
-                            <td> <?php echo $file['id']; ?> </td>
-                            <td> <?php echo $file['filename']; ?> </td>
-                            <td> <?php echo $file["date_created"]; ?> </td>
-                            <td> <?php echo $file["time_created"]; ?> </td>
-                            <td> <?php echo $file["date_accessed"]; ?> </td>
-                            <td> <?php echo $file["time_accessed"]; ?> </td>
-                            <td> <?php echo $file["timestamp"]; ?> </td>
+                            <td class='id'> <?php echo $file['id']; ?> </td>
+                            <td class='filename'> <?php echo $file['filename']; ?> </td>
+                            <td class='dateCreated'> <?php echo $file["date_created"]; ?> </td>
+                            <td class='timeCreated'> <?php echo $file["time_created"]; ?> </td>
+                            <td class='dateAccessed'> <?php echo $file["date_accessed"]; ?> </td>
+                            <td class='timeAccessed'> <?php echo $file["time_accessed"]; ?> </td>
+                            <td class='timestamp'> <?php echo $file["timestamp"]; ?> </td>
                         </tr>
                     <?php } ?>
 
@@ -117,12 +117,17 @@ $uploads_array = find_all_uploads();
             </div>
         </div>
         <script>
-            $(document).ready(function() {
-                var context = $("#canvas").getContext("2d");
-            })
-            $("#submit").click(function() {
-                var file = $("#file").val();
-                alert(file);
+
+            $("tr").click(function() {
+                var timestamp = $(this).find(".timestamp").text();
+                var children = $(this).parent().children().find(".timestamp");
+                $(children).each(function() {
+
+                    if($(this).text() < timestamp) {
+                        $(this).parent().css({"background-color": "greenyellow"});
+                    }
+                })
+
             })
         </script>
     </body>
