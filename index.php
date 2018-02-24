@@ -11,9 +11,9 @@ function db_connect() {
     $connection = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
 
     if($connection) {
-        echo "connected to DB";
+        echo "<div style='width:100%;background-color:greenyellow;display:flex;border:1px solid black;margin-bottom:1px'>" . "<p style='margin:auto'>Database Connected</p>" . "</div>";
     } else {
-        echo "connection failed";
+        echo "<div style='width:100%;background-color:crimson;display:flex;border:1px solid black;margin-bottom:1px'>" . "<p style='margin:auto'>Database Connection Failed</p>" . "</div>";
     }
     return $connection;
 }
@@ -48,13 +48,13 @@ if(isset($_POST["submit"])) {
     $result = mysqli_query($db, $sql);
 
     if($result) {
-        echo "Database upload sucessful";
+        echo "<div style='width:100%;background-color:greenyellow;display:flex;border:1px solid black'>" . "<p style='margin:auto'>Upload Successful!</p>" . "</div>";
     } else {
-        echo "Duplicate Entry Detected. " . "  ";
+        echo "<div style='width:100%;background-color:crimson;display:flex;border:1px solid black'>" . "<p style='margin:auto'>Duplicate Entry Detected</p>" . "</div>";
     }
 
     if (move_uploaded_file($tmp_name, "uploads/" . $file_name)) {
-        echo "successful";
+        //
     } else {
         echo "Upload Failed!";
     }
