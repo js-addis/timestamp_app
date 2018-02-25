@@ -35,14 +35,15 @@ if(isset($_POST["submit"])) {
     $timestamp = time();
 
     $sql = "INSERT INTO files ";
-    $sql .= "(filename, date_created, time_created, date_accessed, time_accessed, timestamp) ";
+    $sql .= "(filename, date_created, time_created, date_accessed, time_accessed, timestamp, file_size) ";
     $sql .= "VALUES (";
     $sql .= "'" . $file_name . "',";
     $sql .= "'" . $date . "',";
     $sql .= "'" . $time . "',";
     $sql .= "'" . $date . "',";
     $sql .= "'" . $time . "',";
-    $sql .= "'" . $timestamp . "'";
+    $sql .= "'" . $timestamp . "',";
+    $sql .= "'" . $file_size . "'";
     $sql .= ")";
 
     $result = mysqli_query($db, $sql);
@@ -56,7 +57,7 @@ if(isset($_POST["submit"])) {
     if (move_uploaded_file($tmp_name, "uploads/".$file_name)) {
         //
     } else {
-        echo "Upload Failed!";
+        //
     }
 
 }
@@ -76,6 +77,7 @@ $uploads_array = find_all_uploads();
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href='style.css'>
         <title>J-Addis</title>
         <style>
@@ -109,6 +111,7 @@ $uploads_array = find_all_uploads();
                             <td class='dateAccessed'> <?php echo $file["date_accessed"]; ?> </td>
                             <td class='timeAccessed'> <?php echo $file["time_accessed"]; ?> </td>
                             <td class='timestamp'> <?php echo $file["timestamp"]; ?> </td>
+                            <td class='filesize' style='display:none'> <?php echo $file["file_size"]; ?></td>
                         </tr>
                     <?php } ?>
 
@@ -116,6 +119,10 @@ $uploads_array = find_all_uploads();
                 <?php db_disconnect($db); ?>
             </div>
             <div id="canvas"><img id="img" src=""></div>
+            <div id="content">
+                <div id="filename_text"></div>
+                <div id="file_data"></div>
+            </div>
 
         </div>
         <script>
@@ -138,11 +145,31 @@ $uploads_array = find_all_uploads();
                 })
             })
             $("tr").click(function() {
+                $("#download").remove();
                 var filename = $(this).find(".filename").text().substring(1);
+                var datecreated = $(this).find(".dateCreated").text();
+                var timecreated = $(this).find(".timeCreated").text();
+                var dateaccessed = $(this).find(".dateAccessed").text();
+                var timeaccessed = $(this).find(".timeAccessed").text();
+                var filesize = $(this).find(".filesize").text();
                 var img = document.getElementById("img");
-                var string = ("uploads/")+filename;
+                var string = "uploads/" + filename;
+                var buttonstring = "<a style='width:100%;height:100%' href='uploads/"+filename+"' download>";
                 img.src=string;
+                $("#filename_text").html(filename);
+                $("#file_data").html(
+                                    "<p>Size:" + filesize + " bytes</p>" +
+                                    "<p>Date Created:" + datecreated + "</p>" +
+                                    "<p>Time Created:" + timecreated + "</p>" +
+                                    "<p>Date Accessed:" + dateaccessed + "</p>" +
+                                    "<p>Time Accessed:" + timeaccessed + "</p>"
+                                    );
+
+                $("#content").append("<button id='download'>" + buttonstring + "<i class='material-icons' style='font-size:25px'>" + "&#xe2c4;" + "</i></button>");
+
+                $("#download").append("<a href=" + buttonstring);
             })
+
         </script>
     </body>
 </html>
