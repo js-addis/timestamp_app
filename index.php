@@ -1,27 +1,9 @@
 <!DOCTYPE html>
 <?php
 
-define("DB_SERVER", "localhost:8889");
-define("DB_USER", "root");
-define("DB_PASS", "root");
-define("DB_NAME", "file_access");
+date_default_timezone_set("America/New_York");
 
-
-function db_connect() {
-    $connection = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
-
-    if($connection) {
-        echo "<div style='width:100%;background-color:greenyellow;display:flex;border:1px solid black;margin-bottom:1px'>" . "<p style='margin:auto'>Database Connected</p>" . "</div>";
-    } else {
-        echo "<div style='width:100%;background-color:crimson;display:flex;border:1px solid black;margin-bottom:1px'>" . "<p style='margin:auto'>Database Connection Failed</p>" . "</div>";
-    }
-    return $connection;
-}
-function db_disconnect() {
-    if(isset($connection)) {
-        mysqli_close($connection);
-    }
-}
+include("database.php");
 
 $db = db_connect();
 
@@ -138,14 +120,15 @@ $uploads_array = find_all_uploads();
                 $(this).addClass("selected");
                 $(children).each(function() {
                     if($(this).text() < timestamp) {
-                        $(this).parent().addClass("smaller");
-                    } else if($(this).text() > timestamp) {
                         $(this).parent().addClass("bigger");
+                    } else if($(this).text() > timestamp) {
+                        $(this).parent().addClass("smaller");
                     }
                 })
             })
             $("tr").click(function() {
                 $("#download").remove();
+                $("#show_older").remove();
                 var filename = $(this).find(".filename").text().substring(1);
                 var datecreated = $(this).find(".dateCreated").text();
                 var timecreated = $(this).find(".timeCreated").text();
@@ -154,20 +137,51 @@ $uploads_array = find_all_uploads();
                 var filesize = $(this).find(".filesize").text();
                 var img = document.getElementById("img");
                 var string = "uploads/" + filename;
-                var buttonstring = "<a style='width:100%;height:100%' href='uploads/"+filename+"' download>";
+                var buttonstring = "<a id='link' style='width:100%;height:100%' href='uploads/"+filename+"' download>";
                 img.src=string;
                 $("#filename_text").html(filename);
                 $("#file_data").html(
-                                    "<p>Size:" + filesize + " bytes</p>" +
-                                    "<p>Date Created:" + datecreated + "</p>" +
-                                    "<p>Time Created:" + timecreated + "</p>" +
-                                    "<p>Date Accessed:" + dateaccessed + "</p>" +
-                                    "<p>Time Accessed:" + timeaccessed + "</p>"
-                                    );
 
+                        "<p>Size:" + filesize + " bytes</p>" +
+                        "<p>Date Created:" + datecreated + "</p>" +
+                        "<p>Time Created:" + timecreated + "</p>" +
+                        "<p>Date Accessed:" + dateaccessed + "</p>" +
+                        "<p>Time Accessed:" + timeaccessed + "</p>"
+
+                );
                 $("#content").append("<button id='download'>" + buttonstring + "<i class='material-icons' style='font-size:25px'>" + "&#xe2c4;" + "</i></button>");
+                $("#content").append("<button id='show_older' value='Show older only'></button>");
 
+                $("#link").click(function() {
+                    var year = new Date().getFullYear();
+                    var month = new Date().getMonth() + 1;
+                    var day = new Date().getDate();
+                    var newDateAccessed = year + "-" + month + "-" + day;
 
+                    var hours = new Date().getHours();
+                    var minutes = new Date().getMinutes();
+                    var seconds = new Date().getSeconds();
+                    var newTimeAccessed = hours + ":" + minutes + ":" + seconds;
+
+                    var newTimeStamp = Math.floor(Date.now()/1000);
+                    alert(newTimeStamp);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "update.php",
+                        data: {
+                            "filename": filename,
+                            "newDateAccessed": newDateAccessed,
+                            "newTimeAccessed": newTimeAccessed,
+                            "newTimeStamp": newTimeStamp
+                        },
+                        success: function() {
+                            window.location.reload();
+                        }
+
+                    })
+
+                })
             })
 
         </script>
