@@ -167,7 +167,7 @@ $uploads_array = find_all_uploads();
 
                 $("#content").append("<button id='download'>" + buttonstring + "<i class='material-icons' style='font-size:25px'>" + "&#xe2c4;" + "</i></button>");
 
-                $("#download").append("<a href=" + buttonstring);
+
             })
 
         </script>
