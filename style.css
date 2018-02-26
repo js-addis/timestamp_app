@@ -4,7 +4,7 @@
     height: 610px;
     margin: auto;
     border: 1px solid black;
-    border-radius: 5px;
+    border-radius: 3px;
     padding: 5px;
     background-image: url(backgrounds/8.png);
     margin-top: 5px;
@@ -15,7 +15,7 @@
     height: 250px;
     margin: auto;
     box-shadow: 0px 1px 1px black;
-    border-radius: 4px;
+    border-radius: 3px;
     overflow-y: scroll;
     background-image: url(backgrounds/6.png);
     margin-top: 20px;
@@ -75,7 +75,6 @@ table.list {
 table.list tr td {
   border: .1px solid black;
     cursor: pointer;
-
 }
 
 table.list tr th {
@@ -153,6 +152,22 @@ p {
     border: 1px solid black;
     cursor: pointer;
 }
+#remove {
+    float: right;
+    width: auto;
+    padding: 5px;
+    height: auto;
+    margin-top: 5px;
+    border-radius: 3px;
+    background-color: red;
+    border: 1px solid black;
+    cursor: pointer;
+    font-weight: bolder;
+    font-size: 12px;
+}
+#remove: hover {
+    border: 1px solid cornflowerblue;
+}
 #download:hover {
     border: 1px solid cornflowerblue;
 }
@@ -179,6 +194,19 @@ p {
     font-size: 12px;
     font-weight: bold;
     background-color: red;
+    border: 1px solid black;
+    cursor: pointer;
+}
+#show_all {
+    float: left;
+    width: auto;
+    height: 25px;
+    margin-top: 7px;
+    margin-left: 3px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: cornflowerblue;
     border: 1px solid black;
     cursor: pointer;
 }

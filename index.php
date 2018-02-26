@@ -31,9 +31,9 @@ if(isset($_POST["submit"])) {
     $result = mysqli_query($db, $sql);
 
     if($result) {
-        echo "<div style='width:100%;background-color:greenyellow;display:flex;border:1px solid black'>" . "<p style='margin:auto'>Upload Successful!</p>" . "</div>";
+        echo "<div style='width:100%;background-color:greenyellow;display:flex;border:1px solid black;margin-bottom:5px'>" . "<p style='margin:auto'>Upload Successful!</p>" . "</div>";
     } else {
-        echo "<div style='width:100%;background-color:crimson;display:flex;border:1px solid black'>" . "<p style='margin:auto'>Duplicate Entry Detected</p>" . "</div>";
+        echo "<div style='width:100%;background-color:crimson;display:flex;border:1px solid black;margin-bottom:5px'>" . "<p style='margin:auto'>Duplicate Entry Detected</p>" . "</div>";
     }
 
     if (move_uploaded_file($tmp_name, "uploads/".$file_name)) {
@@ -68,13 +68,13 @@ $uploads_array = find_all_uploads();
     </head>
     <body>
         <div style="width:15px;height:15px;border:1px solid black;background-color:greenyellow;border-radius:100%;display:inline-block;margin-left:22px"></div>
-        <p id="newp" style="font-size:15px;display:inline-block">: Accessed Before</p>
+        <p id="newp" style="font-size:15px;display:inline-block">: Accessed Earlier</p>
         <div style="width:15px;height:15px;border:1px solid black;background-color:red;border-radius:100%;display:inline-block;margin-left:5px"></div>
-        <p id="newp" style="font-size:15px;display:inline-block">: Accessed After</p>
+        <p id="newp" style="font-size:15px;display:inline-block">: Accessed Later</p>
         <div id="outer">
             <form id="form" action="" method="POST" enctype="multipart/form-data">
                 <input type="file" id="file" name="file">
-                <input type="submit" id="submit" name="submit">
+                <input type="submit" id="submit" name="submit" value="Upload">
             </form>
 
             <div id="container">
@@ -133,9 +133,13 @@ $uploads_array = find_all_uploads();
                 })
             })
             $("tr").click(function() {
+                var thisRow = $(this);
                 $("#download").remove();
                 $("#show_older").remove();
+                $("#show_newer").remove();
+                $("#show_all").remove();
                 $("#displayOnly").remove();
+                $("#remove").remove();
                 var filename = $(this).find(".filename").text().substring(1);
                 var datecreated = $(this).find(".dateCreated").text();
                 var timecreated = $(this).find(".timeCreated").text();
@@ -170,12 +174,57 @@ $uploads_array = find_all_uploads();
                         "<p>Date Accessed: " + dateaccessed + "</p>" +
                         "<p>Time Accessed: " + timeaccessed + "</p>" +
                         "<p>Timestamp: " + timestamp + "</p>" +
-                        "<p>Accessed Later: " + newer + ", " + "Earlier: " + older + "</p>"
+                        "<p>Earlier: <span style='color:green'>" + older + "</span>" + ", " + "Later: <span style='color:red'>" + newer + "</span></p>"
                 );
-                $("#content").append("<button id='download' style='width:76px;height:76px'>" + buttonstring + "<i class='material-icons' style='font-size:25px'>" + "&#xe2c4;" + "</i></button>");
-                $("#content").append("<p id='displayOnly' style='font-size:20px;color:whitesmoke;float:left;margin:8px;margin-left:10px'>" + "Display Only: " + "</p>");
+                $("#content").append("<button id='download' style='width:75.3px;height:75.3px'>" + buttonstring + "<i class='material-icons' style='font-size:25px'>" + "&#xe2c4;" + "</i></button>");
+                $("#content").append("<button id='remove'>Remove</button>")
+                $("#content").append("<p id='displayOnly' style='font-size:20px;color:whitesmoke;float:left;margin:8px;margin-left:10px'>" + "Show: " + "</p>");
                 $("#content").append("<button id='show_older'>Earlier</button>");
+                $("#content").append("<button id='show_newer'>Later</button>");
+                $("#content").append("<button id='show_all'>All</button>");
 
+                $("#show_older").click(function() {
+                    $(".row").each(function() {
+                        $(this).show();
+                    });
+                    $(".row").each(function() {
+                        var stamp = $(this).find(".timestamp").text();
+                        var thisTimestamp = parseInt(stamp);
+                        if(thisTimestamp > timestamp) {
+                            $(this).hide();
+                        }
+                    })
+                })
+                $("#show_newer").click(function() {
+                    $(".row").each(function() {
+                        $(this).show();
+                    });
+                    $(".row").each(function() {
+                        var stamp = $(this).find(".timestamp").text();
+                        var thisTimestamp = parseInt(stamp);
+                        if(thisTimestamp < timestamp) {
+                            $(this).hide();
+                        }
+                    })
+                })
+                $("#show_all").click(function() {
+                    $(".row").each(function() {
+                        $(this).show();
+                    })
+                })
+                $("#remove").click(function() {
+                    $.ajax({
+                        type: "POST",
+                        url: "remove.php",
+                        data: {
+                            "filename": filename,
+                        },
+                        success: function() {
+                            $(thisRow).remove();
+                        }
+
+                    })
+                })
                 $("#link").click(function() {
                     var year = new Date().getFullYear();
                     var month = new Date().getMonth() + 1;
@@ -198,9 +247,10 @@ $uploads_array = find_all_uploads();
                             "newTimeAccessed": newTimeAccessed,
                             "newTimeStamp": newTimeStamp
                         },
-                        success: function() {
-                            window.location.reload();
-                            alert(filename);
+                        success: function(data) {
+                            $(thisRow).find(".dateAccessed").html(newDateAccessed);
+                            $(thisRow).find(".timeAccessed").html(newTimeAccessed);
+                            $(thisRow).find(".timestamp").html(newTimeStamp);
                         }
 
                     })
