@@ -251,6 +251,7 @@ $uploads_array = find_all_uploads();
                             $(thisRow).find(".dateAccessed").html(newDateAccessed);
                             $(thisRow).find(".timeAccessed").html(newTimeAccessed);
                             $(thisRow).find(".timestamp").html(newTimeStamp);
+                            $(thisRow).trigger("click");
                         }
 
                     })
