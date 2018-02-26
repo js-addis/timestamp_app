@@ -67,12 +67,18 @@ $uploads_array = find_all_uploads();
         </style>
     </head>
     <body>
+        <div style="width:15px;height:15px;border:1px solid black;background-color:greenyellow;border-radius:100%;display:inline-block;margin-left:22px"></div>
+        <p id="newp" style="font-size:15px;display:inline-block">: Accessed Before</p>
+        <div style="width:15px;height:15px;border:1px solid black;background-color:red;border-radius:100%;display:inline-block;margin-left:5px"></div>
+        <p id="newp" style="font-size:15px;display:inline-block">: Accessed After</p>
         <div id="outer">
             <form id="form" action="" method="POST" enctype="multipart/form-data">
                 <input type="file" id="file" name="file">
                 <input type="submit" id="submit" name="submit">
             </form>
+
             <div id="container">
+
                 <table class="list">
                     <tr>
                         <th>ID</th>
@@ -85,7 +91,7 @@ $uploads_array = find_all_uploads();
                     </tr>
 
                     <?php while($file = mysqli_fetch_assoc($uploads_array)) { ?>
-                        <tr>
+                        <tr class='row'>
                             <td class='id'> <?php echo $file['id']; ?> </td>
                             <td class='filename'> <?php echo $file['filename']; ?> </td>
                             <td class='dateCreated'> <?php echo $file["date_created"]; ?> </td>
@@ -129,28 +135,46 @@ $uploads_array = find_all_uploads();
             $("tr").click(function() {
                 $("#download").remove();
                 $("#show_older").remove();
+                $("#displayOnly").remove();
                 var filename = $(this).find(".filename").text().substring(1);
                 var datecreated = $(this).find(".dateCreated").text();
                 var timecreated = $(this).find(".timeCreated").text();
                 var dateaccessed = $(this).find(".dateAccessed").text();
                 var timeaccessed = $(this).find(".timeAccessed").text();
                 var filesize = $(this).find(".filesize").text();
+                var timestamp = $(this).find(".timestamp").text();
                 var img = document.getElementById("img");
                 var string = "uploads/" + filename;
                 var buttonstring = "<a id='link' style='width:100%;height:100%' href='uploads/"+filename+"' download>";
+                var older = 0;
+                var newer = 0;
+
+                $(".row").each(function() {
+                    var stamp = $(this).find(".timestamp").text();
+                    var thisTimestamp = parseInt(stamp);
+
+                    if(thisTimestamp > timestamp) {
+                        newer++;
+                    } else if(thisTimestamp < timestamp) {
+                        older++;
+                    }
+                })
+
                 img.src=string;
                 $("#filename_text").html(filename);
                 $("#file_data").html(
 
                         "<p>Size:" + filesize + " bytes</p>" +
-                        "<p>Date Created:" + datecreated + "</p>" +
-                        "<p>Time Created:" + timecreated + "</p>" +
-                        "<p>Date Accessed:" + dateaccessed + "</p>" +
-                        "<p>Time Accessed:" + timeaccessed + "</p>"
-
+                        "<p>Date Created: " + datecreated + "</p>" +
+                        "<p>Time Created: " + timecreated + "</p>" +
+                        "<p>Date Accessed: " + dateaccessed + "</p>" +
+                        "<p>Time Accessed: " + timeaccessed + "</p>" +
+                        "<p>Timestamp: " + timestamp + "</p>" +
+                        "<p>Accessed Later: " + newer + ", " + "Earlier: " + older + "</p>"
                 );
-                $("#content").append("<button id='download'>" + buttonstring + "<i class='material-icons' style='font-size:25px'>" + "&#xe2c4;" + "</i></button>");
-                $("#content").append("<button id='show_older' value='Show older only'></button>");
+                $("#content").append("<button id='download' style='width:76px;height:76px'>" + buttonstring + "<i class='material-icons' style='font-size:25px'>" + "&#xe2c4;" + "</i></button>");
+                $("#content").append("<p id='displayOnly' style='font-size:20px;color:whitesmoke;float:left;margin:8px;margin-left:10px'>" + "Display Only: " + "</p>");
+                $("#content").append("<button id='show_older'>Earlier</button>");
 
                 $("#link").click(function() {
                     var year = new Date().getFullYear();
@@ -164,7 +188,6 @@ $uploads_array = find_all_uploads();
                     var newTimeAccessed = hours + ":" + minutes + ":" + seconds;
 
                     var newTimeStamp = Math.floor(Date.now()/1000);
-                    alert(newTimeStamp);
 
                     $.ajax({
                         type: "POST",
@@ -177,6 +200,7 @@ $uploads_array = find_all_uploads();
                         },
                         success: function() {
                             window.location.reload();
+                            alert(filename);
                         }
 
                     })
