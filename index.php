@@ -13,8 +13,10 @@ if(isset($_POST["submit"])) {
     $file_size = $_FILES["file"]["size"];
     $tmp_name = $_FILES['file']['tmp_name'];
     $date = date("Y/m/d");
-    $time = date("h:i:sa");
+    $time = date("H:i:s");
     $timestamp = time();
+    $date_accessed = null;
+    $time_accessed = null;
 
     $sql = "INSERT INTO files ";
     $sql .= "(filename, date_created, time_created, date_accessed, time_accessed, timestamp, file_size) ";
@@ -22,8 +24,8 @@ if(isset($_POST["submit"])) {
     $sql .= "'" . $file_name . "',";
     $sql .= "'" . $date . "',";
     $sql .= "'" . $time . "',";
-    $sql .= "'" . $date . "',";
-    $sql .= "'" . $time . "',";
+    $sql .= "'" . $date_accessed . "',";
+    $sql .= "'" . $time_accessed . "',";
     $sql .= "'" . $timestamp . "',";
     $sql .= "'" . $file_size . "'";
     $sql .= ")";
@@ -67,10 +69,14 @@ $uploads_array = find_all_uploads();
         </style>
     </head>
     <body>
-        <div style="width:15px;height:15px;border:1px solid black;background-color:greenyellow;border-radius:100%;display:inline-block;margin-left:22px"></div>
-        <p id="newp" style="font-size:15px;display:inline-block">: Accessed Earlier</p>
-        <div style="width:15px;height:15px;border:1px solid black;background-color:red;border-radius:100%;display:inline-block;margin-left:5px"></div>
-        <p id="newp" style="font-size:15px;display:inline-block">: Accessed Later</p>
+        <div style="display:flex">
+            <div style="margin:auto">
+                <div style="width:15px;height:15px;border:1px solid black;background-color:greenyellow;border-radius:100%;display:inline-block"></div>
+                <p id="newp" style="font-size:15px;display:inline-block">: Accessed Earlier</p>
+                <div style="width:15px;height:15px;border:1px solid black;background-color:red;border-radius:100%;display:inline-block;margin-left:5px"></div>
+                <p id="newp" style="font-size:15px;display:inline-block">: Accessed Later</p>
+            </div>
+        </div>
         <div id="outer">
             <form id="form" action="" method="POST" enctype="multipart/form-data">
                 <input type="file" id="file" name="file">
@@ -165,7 +171,7 @@ $uploads_array = find_all_uploads();
                 })
 
                 img.src=string;
-                $("#filename_text").html(filename);
+                $("#filename_text").html("<p>" + filename + "</p>");
                 $("#file_data").html(
 
                         "<p>Size:" + filesize + " bytes</p>" +
@@ -226,6 +232,7 @@ $uploads_array = find_all_uploads();
                     })
                 })
                 $("#link").click(function() {
+
                     var year = new Date().getFullYear();
                     var month = new Date().getMonth() + 1;
                     var day = new Date().getDate();
