@@ -126,7 +126,6 @@ $uploads_array = find_all_uploads();
                 var rows = $(this).parent().children();
                 var children = $(this).parent().children().find(".timestamp");
 
-
                 $(rows).removeClass("bigger, selected");
                 $(rows).removeClass("smaller");
                 $(this).addClass("selected");
